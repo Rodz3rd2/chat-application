@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use FrameworkCore\BaseController;
 
-class WelcomeController extends BaseController
+class ChatController extends BaseController
 {
 	public function index($request, $response)
 	{
