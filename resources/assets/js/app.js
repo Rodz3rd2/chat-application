@@ -32,11 +32,11 @@ var Chat = {
 
         if (!_.isEmpty(message)) {
             $('.direct-chat-messages').append(template({
-                message_date: "October 8th, 2015",
+                message_date: moment().format("MMMM Do YYYY"),
                 chat_name: "Java Man",
                 image: "/img/me.jpg",
                 message: message,
-                message_time: "3.36 PM",
+                message_time: moment().format("hh:mm A"),
                 chat_lastname: "Ahoo ahoo"
             }));
 
