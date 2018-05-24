@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ config('app.name') }}</title>
+
+    <link rel="stylesheet" type="text/css" href="/node_modules/bootstrap3/dist/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/css/app.css" />
+    {% block styles %}
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+    {% endblock %}
+
+    <script type="text/javascript" src="/node_modules/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="/node_modules/bootstrap3/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/js/app.js"></script>
+    {% block scripts %}
+    {% endblock %}
+</body>
+</html>

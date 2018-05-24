@@ -1,22 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ config('app.name') }}</title>
-</head>
-<body>
+{% extends "layouts/app.twig" %}
 
-    <script type="text/javascript">
-        var conn = new WebSocket("ws://localhost:8888");
-        conn.onopen = function (e)
-        {
-            console.log("Connection established!");
-        };
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <button id="addClass">Open Chat</button>
 
-        conn.onmessage = function (e)
-        {
-            console.log(e.data);
-        };
-    </script>
-</body>
-</html>
+            {% include "templates/chat.twig" %}
+        </div>
+    </div>
+</div>
+{% endblock %}
