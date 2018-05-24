@@ -1,0 +1,7 @@
+vendor/
+node_modules/
+.env
+.env.testing
+phinx.yml
+phpunit.xml
+!.gitignore

@@ -1,0 +1,47 @@
+{
+  "name": "framework",
+  "version": "1.1.0",
+  "description": "Build awesome application using this light but powerful micro framework.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rodrigoiii/framework.git"
+  },
+  "keywords": [
+    "micro framework",
+    "framework",
+    "slim",
+    "php",
+    "webpack",
+    "gulp",
+    "gulp-autoprefixer",
+    "gulp-cache",
+    "gulp-csscomb",
+    "gulp-cssnano",
+    "gulp-flatten",
+    "gulp-if",
+    "gulp-load-plugins",
+    "gulp-merge-media-queries",
+    "gulp-plumber",
+    "gulp-uglify",
+    "gulp-useref",
+    "tools",
+    "optimize"
+  ],
+  "author": "rodrigogalura3rd@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rodrigoiii/framework/issues"
+  },
+  "homepage": "https://github.com/rodrigoiii/framework#readme",
+  "devDependencies": {
+    "gulp-imagemin": "^4.1.0",
+    "gulp-sass": "^3.1.0",
+    "web-dev-tools": "^3.4.0"
+  },
+  "dependencies": {
+    "hoek": "^4.2.1"
+  }
+}

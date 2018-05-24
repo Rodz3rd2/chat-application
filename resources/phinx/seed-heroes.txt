@@ -1,0 +1,15 @@
+$faker = \Faker\Factory::create();
+
+$limit = 30;
+$data  = [];
+
+for ($i = 1; $i <= $limit; $i++)
+{
+	$data[] = [
+
+	];
+
+	echo __CLASS__ . " => {$i}/{$limit}\n";
+}
+
+$this->insert('__table_name__', $data);
