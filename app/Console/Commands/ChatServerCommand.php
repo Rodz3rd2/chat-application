@@ -41,7 +41,7 @@ class ChatServerCommand extends BaseCommand
 		    		new ChatApplication
 		    	)
 		    ),
-		    8888
+		    config('chat.port')
 		);
 
 		$server->run();

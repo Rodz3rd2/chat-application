@@ -19,7 +19,7 @@
     <script type="text/javascript" src="/node_modules/moment/moment.js"></script>
     <script type="text/javascript" src="/js/app.js"></script>
     <script type="text/javascript">
-        var conn = new WebSocket("ws://{{ server['SERVER_NAME'] }}:8080");
+        var conn = new WebSocket("ws://{{ server['SERVER_NAME'] }}:{{ config('chat.port') }}");
         conn.onopen = function(e) {
             console.log("Connection established!");
         };
