@@ -28,18 +28,22 @@ var Chat = {
 
     enter: function() {
         var template = _.template($('#message-tmpl').html());
+        var message = $('#status_message').val().trim();
 
-        $('.direct-chat-messages').append(template({
-            message_date: "October 8th, 2015",
-            chat_name: "Java Man",
-            image: "/img/me.jpg",
-            message: $('#status_message').val(),
-            message_time: "3.36 PM",
-            chat_lastname: "Ahoo ahoo"
-        }));
+        if (!_.isEmpty(message)) {
+            $('.direct-chat-messages').append(template({
+                message_date: "October 8th, 2015",
+                chat_name: "Java Man",
+                image: "/img/me.jpg",
+                message: message,
+                message_time: "3.36 PM",
+                chat_lastname: "Ahoo ahoo"
+            }));
+
+            Chat.scrollDown();
+        }
 
         $('#status_message').val("");
-        Chat.scrollDown();
     },
 
     scrollDown: function() {
