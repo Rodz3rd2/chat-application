@@ -127,6 +127,9 @@ body {
     background: #3f9684 none repeat scroll 0 0;
     height: 305px;
     overflow: auto;
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 .direct-chat-messages {

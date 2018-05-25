@@ -3,6 +3,7 @@ var Chat = {
 
     init: function() {
         Chat.scrollDown();
+        $('#qnimate .popup-messages').slimScroll({height: 305, animate: true});
 
         $("#addClass").click(Chat.toggle);
         $("#removeClass").click(Chat.close);
@@ -67,7 +68,10 @@ var Chat = {
     },
 
     scrollDown: function() {
-        $('.popup-box .popup-messages').animate({scrollTop: $('.popup-box .popup-messages').prop('scrollHeight')});
+        var bottom = $('.popup-box .popup-messages').prop('scrollHeight');
+
+        $('.popup-box .popup-messages').animate({scrollTop: bottom});
+        $('#qnimate .popup-messages').slimScroll({'scrollTo': bottom});
     }
 };
 
