@@ -4,4 +4,5 @@ node_modules/
 .env.testing
 phinx.yml
 phpunit.xml
+/resources/dist-views
 !.gitignore

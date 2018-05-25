@@ -5,8 +5,10 @@
     <title>{% block title %}{% endblock %} {{ config('app.name') }}</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
+    <!-- build:css /dist/css/app.css -->
     <link rel="stylesheet" type="text/css" href="/node_modules/bootstrap3/dist/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="/css/app.css" />
+    <!-- endbuild -->
     {% block styles %}{% endblock %}
 
     <link rel="icon" href="/favicon.png">
@@ -18,23 +20,25 @@
     {% block content %}
     {% endblock %}
 
-    <script type="text/javascript" src="/node_modules/jquery/dist/jquery.js"></script>
-    <script type="text/javascript" src="/node_modules/bootstrap3/dist/js/bootstrap.js"></script>
-    <script type="text/javascript" src="/node_modules/underscore/underscore.js"></script>
-    <script type="text/javascript" src="/node_modules/moment/moment.js"></script>
-    <script type="text/javascript" src="/node_modules/jquery-slimscroll/jquery.slimscroll.js"></script>
-
-    {% include "templates/message-tmpl.twig" %}
     <script type="text/javascript">
     window.chat = {
         hostname: "{{ server['SERVER_NAME'] }}",
         port: "{{ config('chat.port') }}",
         first_name: "{{ auth_user.get.first_name }}",
         last_name: "{{ auth_user.get.last_name }}",
-        picture: "{{ auth_user.get.picture }}"
+        picture: "{{ img(auth_user.get.picture) }}"
     };
     </script>
+    {% include "templates/message-tmpl.twig" %}
+
+    <!-- build:js /dist/js/app.js -->
+    <script type="text/javascript" src="/node_modules/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="/node_modules/bootstrap3/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/node_modules/underscore/underscore.js"></script>
+    <script type="text/javascript" src="/node_modules/moment/moment.js"></script>
+    <script type="text/javascript" src="/node_modules/jquery-slimscroll/jquery.slimscroll.js"></script>
     <script type="text/javascript" src="/js/app.js"></script>
+    <!-- endbuild -->
     {% block scripts %}{% endblock %}
 </body>
 </html>

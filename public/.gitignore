@@ -1,3 +1,5 @@
 yarn.lock
 css/*
 js/*
+/dist
+!.gitignore

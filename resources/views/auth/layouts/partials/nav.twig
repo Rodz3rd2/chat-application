@@ -24,7 +24,7 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="javascript:void(0)" style="cursor: default"><img src="{{ auth_user.get.picture }}" width="50px" class="img-responsive img-circle" alt="" /></a>
+                        <a href="javascript:void(0)" style="cursor: default"><img src="{{ img(auth_user.get.picture) }}" width="50px" class="img-responsive img-circle" alt="" /></a>
                     </li>
                 {% else %}
                     <li {{ server['REQUEST_URI'] == path_for('auth.login') ? "class=active" }}><a href="{{ path_for('auth.login') }}">Log In</a></li>
