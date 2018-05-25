@@ -31,6 +31,7 @@
         port: "{{ config('chat.port') }}",
         first_name: "{{ auth_user.get.first_name }}",
         last_name: "{{ auth_user.get.last_name }}",
+        picture: "{{ auth_user.get.picture }}"
     };
     </script>
     <script type="text/javascript" src="/js/app.js"></script>

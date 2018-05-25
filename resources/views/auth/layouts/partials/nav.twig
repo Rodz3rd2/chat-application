@@ -16,10 +16,15 @@
                     <li><a href="javascript:void(0)" id="addClass">Messages</a></li>
                     <li {{ in_array(server['REQUEST_URI'], [path_for('auth.account-detail'), path_for('auth.account-detail.update')]) ? "class=active" }}><a href="{{ path_for('auth.account-detail') }}">Account Detail</a></li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ auth_user.get.getFullName() }} <b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            {{ auth_user.get.getFullName() }} <b class="caret"></b>
+                        </a>
                         <ul class="dropdown-menu">
                             <li><a href="javascript:void(0)" onclick="document.getElementById('logout-form').submit();">Logout</a></li>
                         </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" style="cursor: default"><img src="{{ auth_user.get.picture }}" width="50px" class="img-responsive img-circle" alt="" /></a>
                     </li>
                 {% else %}
                     <li {{ server['REQUEST_URI'] == path_for('auth.login') ? "class=active" }}><a href="{{ path_for('auth.login') }}">Log In</a></li>

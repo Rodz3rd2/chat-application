@@ -57,7 +57,7 @@ var Chat = {
             var data = {
                 message_date: moment().format("MMMM Do YYYY"),
                 chat_name: window.chat.first_name,
-                image: "/img/me.jpg",
+                image: window.chat.picture,
                 message: message,
                 message_time: moment().format("hh:mm A"),
                 chat_lastname: window.chat.last_name
