@@ -7,6 +7,18 @@ var Chat = {
         $("#addClass").click(Chat.toggle);
         $("#removeClass").click(Chat.close);
         $('#status_message').keyup(Chat.typing);
+
+        var conn = new WebSocket("ws://"+chat.hostname+":"+chat.port);
+        conn.onopen = Chat.onOpen;
+        conn.onmessage = Chat.onMessage;
+    },
+
+    onOpen: function(e) {
+        console.log("Connection established!");
+    },
+
+    onMessage: function(e) {
+        console.log(e.data);
     },
 
     toggle: function() {

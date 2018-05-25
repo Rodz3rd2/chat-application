@@ -11,6 +11,6 @@ class AuthController extends BaseController
 
     public function authenticatedHomePage($request, $response)
     {
-        return $this->view->render($response, "auth/authenticated-home-page.twig");
+        return $this->view->render($response, "index.twig");
     }
 }
