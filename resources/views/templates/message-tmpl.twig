@@ -1,0 +1,21 @@
+<script type="text/template" id="message-tmpl">
+    <div class="chat-box-single-line">
+        <abbr class="timestamp"><%= message_date %></abbr>
+    </div>
+    <div class="direct-chat-msg doted-border">
+        <div class="direct-chat-info clearfix">
+            <span class="direct-chat-name pull-left"><%= chat_name %></span>
+        </div>
+        <img alt="iamgurdeeposahan" src="<%= image %>" class="direct-chat-img">
+        <div class="direct-chat-text">
+            <%= message %>
+        </div>
+        <div class="direct-chat-info clearfix">
+            <span class="direct-chat-timestamp pull-right"><%= message_time %></span>
+        </div>
+        <div class="direct-chat-info clearfix">
+            <span class="direct-chat-img-reply-small pull-left"></span>
+            <span class="direct-chat-reply-name"><%= chat_lastname %></span>
+        </div>
+    </div>
+</script>

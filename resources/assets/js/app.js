@@ -4,14 +4,22 @@ var Chat = {
     init: function() {
         Chat.scrollDown();
 
-        $("#addClass").click(Chat.open);
+        $("#addClass").click(Chat.toggle);
         $("#removeClass").click(Chat.close);
         $('#status_message').keyup(Chat.typing);
     },
 
+    toggle: function() {
+        if ($('#qnimate').hasClass('popup-box-on')) {
+            Chat.close();
+        } else {
+            Chat.open();
+        }
+    },
+
     open: function() {
-        Chat.scrollDown();
         $('#qnimate').addClass('popup-box-on');
+        Chat.scrollDown();
     },
 
     close: function() {

@@ -1,0 +1,19 @@
+{% set alerts = ['success', 'danger', 'primary', 'info', 'warning', 'default'] %}
+
+{% for alert in alerts %}
+    {% if flash.getMessage(alert) %}
+        <div class="alert alert-{{alert}} fade in">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {% if alert == "success" %}
+            <span class="glyphicon glyphicon-ok-sign"></span>
+            {% elseif alert == "info" %}
+            <span class="glyphicon glyphicon-exclamation-sign"></span>
+            {% elseif alert == "warning" %}
+            <span class="glyphicon glyphicon-warning-sign"></span>
+            {% elseif alert == "danger" %}
+            <span class="glyphicon glyphicon-remove-sign"></span>
+            {% endif %}
+            {{ flash.getMessage(alert) | first }}
+        </div>
+    {% endif %}
+{% endfor %}

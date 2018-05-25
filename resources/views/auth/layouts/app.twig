@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %} {{ config('app.name') }}</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <link rel="stylesheet" type="text/css" href="/node_modules/bootstrap3/dist/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/css/app.css" />
+    {% block styles %}{% endblock %}
+
+    <link rel="icon" href="/favicon.png">
+</head>
+<body>
+    {% include "auth/layouts/partials/nav.twig" %}
+    {% include "templates/chat.twig" %}
+
+    {% block content %}
+    {% endblock %}
+
+    {% include "templates/message-tmpl.twig" %}
+
+    <script type="text/javascript" src="/node_modules/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="/node_modules/bootstrap3/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/node_modules/underscore/underscore.js"></script>
+    <script type="text/javascript" src="/node_modules/moment/moment.js"></script>
+    <script type="text/javascript" src="/js/app.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        var conn = new WebSocket("ws://{{ server['SERVER_NAME'] }}:{{ config('chat.port') }}");
+        conn.onopen = function(e) {
+            console.log("Connection established!");
+        };
+
+        conn.onmessage = function(e) {
+            console.log(e.data);
+        };
+
+        $('form').submit(function(event) {
+            $(this).find('button[type="submit"]').button("loading")
+        });
+    });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,17 @@
+{% extends 'auth/layouts/app.twig' %}
+
+{% block title %}Authenticated Home Page |{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="page-header">Authenticated Home Page</h1>
+
+            {% include "auth/templates/flash-messages/bootstrap.twig" %}
+
+            <p>Welcome</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'auth/layouts/app.twig' %}
+
+{% block title %}Registration Page |{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="page-header">Registration Page</h1>
+
+            {% include "auth/templates/error-list/bootstrap.twig" %}
+
+            <form action="{{ path_for('auth.register') }}" method="POST" role="form">
+                {{ csrf.field | raw }}
+
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" class="form-control" name="first_name" value="{{ oldInput.first_name ?: "" }}" autofocus />
+                </div>
+
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" class="form-control" name="last_name" value="{{ oldInput.last_name ?: "" }}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" class="form-control" name="email" value="{{ oldInput.email ?: "" }}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" name="password" />
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" class="form-control" name="confirm_password" />
+                </div>
+
+                <button type="submit" class="btn btn-primary" data-loading-text="Loading...">Register</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
