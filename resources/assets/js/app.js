@@ -9,9 +9,9 @@ var Chat = {
         $("#removeClass").click(Chat.close);
         $('#status_message').keyup(Chat.typing);
 
-        var conn = new WebSocket("ws://"+chat.hostname+":"+chat.port);
-        conn.onopen = Chat.onOpen;
-        conn.onmessage = Chat.onMessage;
+        Chat.conn = new WebSocket("ws://"+chat.hostname+":"+chat.port);
+        Chat.conn.onopen = Chat.onOpen;
+        Chat.conn.onmessage = Chat.onMessage;
     },
 
     onOpen: function(e) {
@@ -19,7 +19,10 @@ var Chat = {
     },
 
     onMessage: function(e) {
-        console.log(e.data);
+        var template = _.template($('#message-tmpl').html());
+        var parse_data = JSON.parse(e.data);
+
+        Chat.message(parse_data);
     },
 
     toggle: function() {
@@ -48,23 +51,34 @@ var Chat = {
     },
 
     enter: function() {
-        var template = _.template($('#message-tmpl').html());
         var message = $('#status_message').val().trim();
 
         if (!_.isEmpty(message)) {
-            $('.direct-chat-messages').append(template({
+            var data = {
                 message_date: moment().format("MMMM Do YYYY"),
-                chat_name: "Java Man",
+                chat_name: window.chat.first_name,
                 image: "/img/me.jpg",
                 message: message,
                 message_time: moment().format("hh:mm A"),
-                chat_lastname: "Ahoo ahoo"
-            }));
+                chat_lastname: window.chat.last_name
+            };
 
-            Chat.scrollDown();
+            Chat.message(data);
+            Chat.conn.send(JSON.stringify(data));
         }
 
         $('#status_message').val("");
+    },
+
+    message: function(data) {
+        var template = _.template($('#message-tmpl').html());
+
+        if ($('.direct-chat-messages .no-conversation').length > 0) {
+            $('.direct-chat-messages .no-conversation').remove();
+        }
+
+        $('.direct-chat-messages').append(template(data));
+        Chat.scrollDown();
     },
 
     scrollDown: function() {
