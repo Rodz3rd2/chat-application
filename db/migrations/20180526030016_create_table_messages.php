@@ -11,7 +11,7 @@ class CreateTableMessages extends AbstractMigration
             ->addColumn('message', 'text', ['limit' => MysqlAdapter::TEXT_TINY])
             ->addColumn('from_user_id', 'integer')
             ->addColumn('to_user_id', 'integer')
-            ->addColumn('is_read', 'boolean')
+            ->addColumn('is_read', 'boolean', ['default' => 0])
             ->addTimestamps();
 
         $table->create();

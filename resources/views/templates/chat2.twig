@@ -3,7 +3,7 @@
         <div id="profile">
             <div class="wrap">
                 <img id="profile-img" src="{{ img(auth_user.get.picture) }}" class="online" alt="" />
-                <p>Mike Ross</p>
+                <p>{{ auth_user.get.getFullName() }}</p>
                 <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
                 <div id="status-options">
                     <ul>
@@ -35,7 +35,7 @@
         <div id="contacts">
             <ul>
                 {% for index, contact in contacts %}
-                    <li class="contact {{ index == 0 ? "active" }}">
+                    <li class="contact {{ index == 0 ? "active" }}" data-id="{{ contact.id }}">
                         <div class="wrap">
                             <span class="contact-status"></span>
                             <img class="image" src="{{ contact.picture }}" alt="" />
@@ -47,75 +47,34 @@
                         </div>
                     </li>
                 {% endfor %}
-                {# <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status online"></span>
-                        <img class="image" src="/img/me.jpg" alt="" />
-                        <div class="meta">
-                            <i class="badge">3</i>
-                            <p class="name">Louis Litt</p>
-                            <p class="preview">You just got LITT up, Mike.</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="contact active">
-                    <div class="wrap">
-                        <span class="contact-status busy"></span>
-                        <img src="/img/me.jpg" alt="" />
-                        <div class="meta">
-                            <p class="name">Harvey Specter</p>
-                            <p class="preview">Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status away"></span>
-                        <img src="/img/me.jpg" alt="" />
-                        <div class="meta">
-                            <p class="name">Rachel Zane</p>
-                            <p class="preview">I was thinking that we could have chicken tonight, sounds good?</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status"></span>
-                        <img src="/img/me.jpg" alt="" />
-                        <div class="meta">
-                            <p class="name">Jonathan Sidwell</p>
-                            <p class="preview"><span>You:</span> That's bullshit. This deal is solid.</p>
-                        </div>
-                    </div>
-                </li> #}
+                {# contact status: online, busy, away #}
             </ul>
         </div>
-        {# <div id="bottom-bar">
-            <button><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add contact</span></button>
-            <a id="settings"><i class="fa fa-sign-out fa-fw" aria-hidden="true"></i> <span>Logout</span></a>
-            <a href="javascript:void(0)" class="btn-signout" onclick="document.getElementById('logout-form').submit();">
-                Sign out <i class="fa fa-sign-out"></i>
-            </a>
-        </div> #}
     </div>
     <div class="content">
         <div class="contact-profile">
             <img src="{{ contacts[0].picture }}" alt="" />
             <p>{{ contacts[0].getFullName() }}</p>
-            {# <div class="social-media">
-                <i class="fa fa-facebook" aria-hidden="true"></i>
-                <i class="fa fa-twitter" aria-hidden="true"></i>
-                <i class="fa fa-instagram" aria-hidden="true"></i>
-            </div> #}
         </div>
         <div class="messages">
             <ul>
-                <li class="no-conversation">No conversation.</li>
+                {% set messages = auth.messagesTo(contacts[0].id).with('user').get() %}
+
+                {% if messages.isNotEmpty() %}
+                    {% for message in messages %}
+                        <li class="{{ message.user.id == auth_user.get.id ? "sent" : "replies" }}">
+                            <img src="{{ message.user.picture }}" alt="" />
+                            <p>{{ message.message }}</p>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="no-conversation">No conversation.</li>
+                {% endif %}
             </ul>
         </div>
         <div class="message-input">
             <div class="wrap">
-                <input type="text" placeholder="Write your message..." id="input-message" />
+                <input type="text" placeholder="Write your message..." id="input-message" autofocus />
                 {# <i class="fa fa-paperclip attachment" aria-hidden="true"></i> #}
                 <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
             </div>

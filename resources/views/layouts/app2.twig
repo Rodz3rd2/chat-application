@@ -27,9 +27,7 @@
     window.chat = {
         hostname: "{{ server['SERVER_NAME'] }}",
         port: "{{ config('chat.port') }}",
-        // first_name: "{{ auth_user.get.first_name }}",
-        // last_name: "{{ auth_user.get.last_name }}",
-        picture: "{{ img(auth_user.get.picture) }}"
+        auth_id: "{{ auth_user.get.id }}",
     };
     </script>
     {% include "templates/message-tmpl.twig" %}
