@@ -11,6 +11,8 @@ class UserSeeder extends AbstractSeed
         $limit = 30;
         $data  = [];
 
+        $pictures = "/img/avatar{n}.png";
+
         for ($i = 1; $i <= $limit; $i++)
         {
             $email = $faker->email;
@@ -19,7 +21,8 @@ class UserSeeder extends AbstractSeed
                 'first_name' => $faker->firstName,
                 'last_name' => $faker->lastName,
                 'email' => $email,
-                'password' => password_hash($email, PASSWORD_DEFAULT)
+                'password' => password_hash($email, PASSWORD_DEFAULT),
+                'picture' => strtr($pictures, ["{n}" => rand(1, 5)])
             ];
 
             echo __CLASS__ . " => {$i}/{$limit}\n";

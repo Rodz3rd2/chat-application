@@ -9,8 +9,9 @@ class AuthController extends BaseController
 {
     use AuthControllerTrait;
 
-    public function authenticatedHomePage($request, $response)
+    public function successRedirect($response)
     {
-        return $this->view->render($response, "index.twig");
+        $this->flash->addMessage('success', "Successfully Login.");
+        return $response->withRedirect($this->container->router->pathFor('chat-room'));
     }
 }

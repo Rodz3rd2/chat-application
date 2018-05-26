@@ -34,11 +34,25 @@
         </div> #}
         <div id="contacts">
             <ul>
-                <li class="contact">
+                {% for index, contact in contacts %}
+                    <li class="contact {{ index == 0 ? "active" }}">
+                        <div class="wrap">
+                            <span class="contact-status"></span>
+                            <img class="image" src="{{ contact.picture }}" alt="" />
+                            <div class="meta">
+                                <i class="badge"></i>
+                                <p class="name">{{ contact.getFullName() }}</p>
+                                <p class="preview"></p>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+                {# <li class="contact">
                     <div class="wrap">
                         <span class="contact-status online"></span>
                         <img class="image" src="/img/me.jpg" alt="" />
                         <div class="meta">
+                            <i class="badge">3</i>
                             <p class="name">Louis Litt</p>
                             <p class="preview">You just got LITT up, Mike.</p>
                         </div>
@@ -73,7 +87,7 @@
                             <p class="preview"><span>You:</span> That's bullshit. This deal is solid.</p>
                         </div>
                     </div>
-                </li>
+                </li> #}
             </ul>
         </div>
         {# <div id="bottom-bar">
@@ -86,8 +100,8 @@
     </div>
     <div class="content">
         <div class="contact-profile">
-            <img src="/img/me.jpg" alt="" />
-            <p>Harvey Specter</p>
+            <img src="{{ contacts[0].picture }}" alt="" />
+            <p>{{ contacts[0].getFullName() }}</p>
             {# <div class="social-media">
                 <i class="fa fa-facebook" aria-hidden="true"></i>
                 <i class="fa fa-twitter" aria-hidden="true"></i>
