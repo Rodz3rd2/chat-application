@@ -11,5 +11,5 @@ return [
     'UserMiddleware' => App\Http\Middlewares\Auth\UserMiddleware::class,
     'GuestMiddleware' => App\Http\Middlewares\Auth\GuestMiddleware::class,
 
-    'login_lock_time' => 60 * 60 * 24 // 1 day
+    'authenticated_session_expiration' => 60 * 60 * 24 // 1 day
 ];

@@ -58,13 +58,13 @@
         </div>
         <div class="messages">
             <ul>
-                {% set messages = auth.messagesTo(contacts[0].id).with('user').get() %}
+                {% set conversation = constant("App\\Models\\Message::conversation(auth_user.get.id, contacts[0].id).get()") %}
 
-                {% if messages.isNotEmpty() %}
-                    {% for message in messages %}
-                        <li class="{{ message.user.id == auth_user.get.id ? "sent" : "replies" }}">
-                            <img src="{{ message.user.picture }}" alt="" />
-                            <p>{{ message.message }}</p>
+                {% if conversation.isNotEmpty() %}
+                    {% for convo in conversation %}
+                        <li class="{{ convo.user.id == auth_user.get.id ? "sent" : "replies" }}">
+                            <img src="{{ convo.user.picture }}" alt="" />
+                            <p>{{ convo.convo }}</p>
                         </li>
                     {% endfor %}
                 {% else %}

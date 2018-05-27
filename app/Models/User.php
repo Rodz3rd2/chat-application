@@ -12,15 +12,16 @@ class User extends UserModel
 
     public function messages()
     {
-        return $this->hasMany('App\Models\Message', "from_user_id");
+        return $this->hasMany('App\Models\Message', "sender_id");
     }
 
-    public function messagesTo($user_id)
+    public function numberOfUnread($sender_id)
     {
         return $this->messages()
-            ->where('to_user_id', $user_id)
-            ->orWhere('from_user_id', $user_id)
-            ->orderBy('created_at', "ASC");
+                    ->where('sender_id', $sender_id)
+                    // ->where('receiver_id', $this->id)
+                    ->get()
+                    ->count();
     }
 
     public static function contacts()

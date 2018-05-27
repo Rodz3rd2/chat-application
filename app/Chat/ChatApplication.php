@@ -32,17 +32,25 @@ class ChatApplication implements MessageComponentInterface {
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
         parse_str($from->httpRequest->getUri()->getQuery(), $params);
-
         $data = json_decode($msg);
+        $sender_id = $params['auth_id'];
+        $receiver_id = $data->receiver_id;
 
         switch ($data->type) {
             case static::TYPING_TYPE:
-                # code...
+                // if receiver online
+                if (isset($this->clients[$receiver_id]))
+                {
+                    $receiver = $this->clients[$receiver_id];
+                    $receiver->send(json_encode($data));
+                }
+
                 break;
 
             case static::SENDING_MESSAGE_TYPE:
-                $message = Message::sendMessage($data->message, $params['auth_id'], $data->to_user_id);
-                $user_sender = User::find($params['auth_id']);
+                $message = Message::sendMessage($data->message, $sender_id, $receiver_id);
+                $user_sender = User::find($sender_id);
+                $user_receiver = User::find($receiver_id);
 
                 if (!is_null($message))
                 {
@@ -51,21 +59,22 @@ class ChatApplication implements MessageComponentInterface {
 
                     $message_receive['sender'] = [
                         'message' => $data->message,
-                        'to_user_id' => $data->to_user_id,
+                        'receiver_id' => $receiver_id,
                         'picture' => $user_sender->picture
                     ];
                     $from->send(json_encode($message_receive));
                     unset($message_receive['sender']);
 
                     // if receiver online
-                    if (isset($this->clients[$data->to_user_id]))
+                    if (isset($this->clients[$receiver_id]))
                     {
-                        $receiver = $this->clients[$data->to_user_id];
+                        $receiver = $this->clients[$receiver_id];
 
                         $message_receive['receiver'] = [
                             'message' => $data->message,
-                            'from_user_id' => $params['auth_id'],
-                            'picture' => $user_sender->picture
+                            'sender_id' => $sender_id,
+                            'picture' => $user_sender->picture,
+                            'number_unread' => $user_receiver->numberOfUnread($sender_id)
                         ];
 
                         $receiver->send(json_encode($message_receive));
@@ -75,16 +84,6 @@ class ChatApplication implements MessageComponentInterface {
 
                 break;
         }
-
-        // foreach ($this->clients as $client) {
-        //     if ($from !== $client) {
-        //         // The sender is not the receiver, send to each client connected
-        //         // $client->send($msg);
-
-        //         $data = json_decode($msg);
-        //         $message = Message::sendMessage($data->message, Auth::user()->id, $data->to_user_id);
-        //     }
-        // }
     }
 
     public function onClose(ConnectionInterface $conn) {
