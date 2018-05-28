@@ -54,6 +54,9 @@ var Chat2 = {
 
         $('.contact-profile img').attr('src', img);
         $('.contact-profile p').text(name);
+
+        var sender_id = $('#contacts .contact.active').data('id');
+        Chat2.conn.send(JSON.stringify({event: Chat2Events.ON_READ_MESSAGE, sender_id: sender_id}));
     },
 
     selectStatus: function() {
