@@ -27,43 +27,13 @@ var Chat2 = {
 
     onMessage: function(e) {
         var parse_data = JSON.parse(e.data);
-        var sent_tmpl = _.template($('#message-sent-tmpl').html());
-        var replied_tmpl = _.template($('#message-replied-tmpl').html());
-        var typing_tmpl = _.template($('#typing-tmpl').html());
 
-        if ($('.messages .no-conversation').length > 0) {
-            $('.messages .no-conversation').remove();
-        }
+        var event = parse_data.event;
+        delete parse_data.event;
 
-        if (parse_data.type === Chat2.TYPING_TYPE) {
-            if (parse_data.is_typing && $('.messages ul li.typing').length === 0) {
-                $('.messages ul').append(typing_tmpl());
-            } else {
-                $('.messages ul li.typing').remove();
-            }
-        }
+        console.log(event, parse_data);
 
-        if (parse_data.type === Chat2.SENDING_MESSAGE_TYPE) {
-            if (typeof(parse_data.sender) !== "undefined") {
-                var sender = parse_data.sender;
-
-                $('.messages ul li.typing').remove();
-                $('.contact[data-id="'+sender.receiver_id+'"] .preview').html('<span>You: </span>' + sender.message);
-                $('.messages ul').append(sent_tmpl({'message': sender.message, 'picture': sender.picture}));
-            }
-
-            // if receiver online
-            if (typeof(parse_data.receiver) !== "undefined") {
-                var receiver = parse_data.receiver;
-
-                $('.messages ul li.typing').remove();
-                $('.contact[data-id="'+receiver.sender_id+'"] .badge').html(receiver.number_unread);
-                $('.contact[data-id="'+receiver.sender_id+'"] .preview').html(receiver.message);
-                $('.messages ul').append(replied_tmpl({'message': receiver.message, 'picture': receiver.picture}));
-            }
-        }
-
-        Chat2.scrollDown();
+        Chat2Events[event](parse_data);
     },
 
     showStatusOptions: function() {
@@ -112,17 +82,12 @@ var Chat2 = {
     typing: function(e) {
         var receiver_id = $('#contacts .contact.active').data('id');
         var key_code = e.which;
-        var data = {
-            type: Chat2.TYPING_TYPE,
-            is_typing: true,
-            receiver_id: receiver_id
-        };
 
         // initial typing
         if (Chat2.is_initial_typing) {
             Chat2.is_initial_typing = false;
 
-            Chat2.conn.send(JSON.stringify(data));
+            Chat2.conn.send(JSON.stringify({event: Chat2Events.ON_TYPING, receiver_id: receiver_id}));
         }
 
         // when stop typing
@@ -130,8 +95,7 @@ var Chat2 = {
         Chat2.typing_delay = _.delay(function() {
             Chat2.is_initial_typing = true;
 
-            data.is_typing = false;
-            Chat2.conn.send(JSON.stringify(data));
+            Chat2.conn.send(JSON.stringify({event: Chat2Events.ON_STOP_TYPING, receiver_id: receiver_id}));
         }, 3000);
 
         if (key_code === Chat2.ENTER) {
@@ -145,7 +109,7 @@ var Chat2 = {
 
         if (!_.isEmpty(message)) {
             var data = {
-                type: Chat2.SENDING_MESSAGE_TYPE,
+                event: Chat2Events.ON_SEND_MESSAGE,
                 // message_date: moment().format("MMMM Do YYYY"),
                 // chat_name: chat.first_name,
                 receiver_id: receiver_id,
@@ -163,6 +127,51 @@ var Chat2 = {
     scrollDown: function() {
         var bottom = $('.messages').prop('scrollHeight');
         $('.messages').animate({scrollTop: bottom});
+    }
+};
+
+var Chat2Events = {
+    ON_SEND_MESSAGE: "onSendMessage",
+    ON_TYPING: "onTyping",
+    ON_STOP_TYPING: "onStopTyping",
+
+    onSendMessage: function(data) {
+        var sent_tmpl = _.template($('#message-sent-tmpl').html());
+        var replied_tmpl = _.template($('#message-replied-tmpl').html());
+
+        if ($('.messages .no-conversation').length > 0) {
+            $('.messages .no-conversation').remove();
+        }
+
+        if (typeof(data.sender) !== "undefined") {
+            var sender = data.sender;
+
+            $('.messages ul li.typing').remove();
+            $('.contact[data-id="'+sender.receiver_id+'"] .preview').html('<span>You: </span>' + sender.message);
+            $('.messages ul').append(sent_tmpl({'message': sender.message, 'picture': sender.picture}));
+        }
+
+        // if receiver online
+        if (typeof(data.receiver) !== "undefined") {
+            var receiver = data.receiver;
+
+            $('.messages ul li.typing').remove();
+            $('.contact[data-id="'+receiver.sender_id+'"] .badge').html(receiver.number_unread);
+            $('.contact[data-id="'+receiver.sender_id+'"] .preview').html(receiver.message);
+            $('.messages ul').append(replied_tmpl({'message': receiver.message, 'picture': receiver.picture}));
+        }
+    },
+
+    onTyping: function() {
+        var typing_tmpl = _.template($('#typing-tmpl').html());
+
+        if ($('.messages ul li.typing').length === 0) {
+            $('.messages ul').append(typing_tmpl());
+        }
+    },
+
+    onStopTyping: function() {
+        $('.messages ul li.typing').remove();
     }
 };
 

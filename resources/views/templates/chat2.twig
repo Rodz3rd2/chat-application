@@ -58,7 +58,7 @@
         </div>
         <div class="messages">
             <ul>
-                {% set conversation = constant("App\\Models\\Message::conversation(auth_user.get.id, contacts[0].id).get()") %}
+                {# {% set conversation = constant("App\\Models\\Message::conversation(auth_user.get.id, contacts[0].id).get()") %}
 
                 {% if conversation.isNotEmpty() %}
                     {% for convo in conversation %}
@@ -69,7 +69,7 @@
                     {% endfor %}
                 {% else %}
                     <li class="no-conversation">No conversation.</li>
-                {% endif %}
+                {% endif %} #}
             </ul>
         </div>
         <div class="message-input">

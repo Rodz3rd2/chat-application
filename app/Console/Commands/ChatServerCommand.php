@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Chat\ChatApplication;
+use App\Chat\Application;
 use FrameworkCore\BaseCommand;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
@@ -38,7 +38,7 @@ class ChatServerCommand extends BaseCommand
 		$server = IoServer::factory(
 		    new HttpServer(
 		    	new WsServer(
-		    		new ChatApplication
+		    		new Application
 		    	)
 		    ),
 		    config('chat.port')
