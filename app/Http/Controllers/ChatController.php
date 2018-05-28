@@ -9,7 +9,7 @@ class ChatController extends BaseController
 {
 	public function index($request, $response)
 	{
-        $contacts = User::contacts();
+        $contacts = User::contacts()->get();
 		return $this->view->render($response, "index.twig", compact('contacts'));
 	}
 }

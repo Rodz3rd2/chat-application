@@ -21,11 +21,11 @@ class Events
         $sender_id = $params['auth_id'];
         $receiver_id = $data->receiver_id;
 
-        $message = Message::sendMessage($data->message, $sender_id, $receiver_id);
+        $is_sent = Message::sendMessage($data->message, $sender_id, $receiver_id);
         $user_sender = User::find($sender_id);
         $user_receiver = User::find($receiver_id);
 
-        if (!is_null($message))
+        if (!is_null($is_sent))
         {
             // self
             $return_data['event'] = __FUNCTION__;
@@ -47,7 +47,7 @@ class Events
                     'message' => $data->message,
                     'sender_id' => $sender_id,
                     'picture' => $user_sender->picture,
-                    'number_unread' => $user_receiver->numberOfUnread($sender_id)
+                    'number_unread' => $user_sender->numberOfUnread($receiver_id)
                 ];
 
                 $receiver->send(json_encode($return_data));
@@ -58,6 +58,10 @@ class Events
 
     public function onTyping(ConnectionInterface $from, $data)
     {
+        // mark unread as read
+        $data->sender_id = $data->receiver_id;
+        $this->onReadMessage($from, $data);
+
         // if receiver online
         if (isset($this->clients[$data->receiver_id]))
         {
@@ -77,6 +81,23 @@ class Events
 
             $receiver = $this->clients[$data->receiver_id];
             $receiver->send(json_encode($return_data));
+        }
+    }
+
+    public function onReadMessage(ConnectionInterface $from, $data)
+    {
+        parse_str($from->httpRequest->getUri()->getQuery(), $params);
+
+        $receiver_id = $params['auth_id'];
+        $sender_id = $data->sender_id;
+
+        $is_marked = Message::markAsRead($sender_id, $receiver_id);
+        if (!is_null($is_marked))
+        {
+            $return_data['event'] = __FUNCTION__;
+            $return_data['sender_id'] = $sender_id;
+
+            $from->send(json_encode($return_data));
         }
     }
 }

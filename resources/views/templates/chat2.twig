@@ -40,7 +40,7 @@
                             <span class="contact-status"></span>
                             <img class="image" src="{{ contact.picture }}" alt="" />
                             <div class="meta">
-                                <i class="badge"></i>
+                                <i class="badge">{{ contact.numberOfUnread(auth_user.get.id) }}</i>
                                 <p class="name">{{ contact.getFullName() }}</p>
                                 <p class="preview"></p>
                             </div>
@@ -58,18 +58,18 @@
         </div>
         <div class="messages">
             <ul>
-                {# {% set conversation = constant("App\\Models\\Message::conversation(auth_user.get.id, contacts[0].id).get()") %}
+                {% set conversation = Model_Message('conversation', auth_user.get.id, contacts[0].id) %}
 
                 {% if conversation.isNotEmpty() %}
                     {% for convo in conversation %}
                         <li class="{{ convo.user.id == auth_user.get.id ? "sent" : "replies" }}">
                             <img src="{{ convo.user.picture }}" alt="" />
-                            <p>{{ convo.convo }}</p>
+                            <p>{{ convo.message }}</p>
                         </li>
                     {% endfor %}
                 {% else %}
                     <li class="no-conversation">No conversation.</li>
-                {% endif %} #}
+                {% endif %}
             </ul>
         </div>
         <div class="message-input">

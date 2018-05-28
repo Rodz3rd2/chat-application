@@ -134,6 +134,7 @@ var Chat2Events = {
     ON_SEND_MESSAGE: "onSendMessage",
     ON_TYPING: "onTyping",
     ON_STOP_TYPING: "onStopTyping",
+    ON_READ_MESSAGE: "onReadMessage",
 
     onSendMessage: function(data) {
         var sent_tmpl = _.template($('#message-sent-tmpl').html());
@@ -172,6 +173,12 @@ var Chat2Events = {
 
     onStopTyping: function() {
         $('.messages ul li.typing').remove();
+    },
+
+    onReadMessage: function(data) {
+        var sender_id = data.sender_id;
+
+        $('.contact[data-id="'+sender_id+'"] .badge').text("0");
     }
 };
 

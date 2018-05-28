@@ -15,17 +15,17 @@ class User extends UserModel
         return $this->hasMany('App\Models\Message', "sender_id");
     }
 
-    public function numberOfUnread($sender_id)
+    public function numberOfUnread($receiver_id)
     {
         return $this->messages()
-                    ->where('sender_id', $sender_id)
-                    // ->where('receiver_id', $this->id)
+                    ->where('receiver_id', $receiver_id)
+                    ->where('is_read', 0)
                     ->get()
                     ->count();
     }
 
     public static function contacts()
     {
-        return static::where('id', "<>", Auth::user()->id)->get();
+        return static::where('id', "<>", Auth::user()->id);
     }
 }
