@@ -2,6 +2,7 @@
 
 namespace App\Chat;
 
+use App\Models\ChatStatus;
 use App\Models\Message;
 use App\Models\User;
 use Ratchet\ConnectionInterface;
@@ -12,6 +13,54 @@ class Events
 
     public function __construct() {
         $this->clients = [];
+    }
+
+    public function onConnectionEstablish(ConnectionInterface $from, $data)
+    {
+        parse_str($from->httpRequest->getUri()->getQuery(), $params);
+        $auth_id = $params['auth_id'];
+
+        $clients = $this->clients;
+
+        foreach ($clients as $client) {
+            if ($client !== $from)
+            {
+                $return_data['event'] = __FUNCTION__;
+                $return_data['user_id'] = $auth_id;
+
+                // if user have no chat status
+                $chatStatus = ChatStatus::findByUserId($auth_id);
+                $result = !is_null($chatStatus) ? $chatStatus->setAsOnline() : ChatStatus::createOnlineUser($auth_id);
+
+                $return_data['result'] = !is_null($result);
+
+                $client->send(json_encode($return_data));
+            }
+        }
+    }
+
+    public function onDisconnect(ConnectionInterface $from, $data)
+    {
+        parse_str($from->httpRequest->getUri()->getQuery(), $params);
+        $auth_id = $params['auth_id'];
+
+        $clients = $this->clients;
+
+        foreach ($clients as $client) {
+            if ($client !== $from)
+            {
+                $return_data['event'] = __FUNCTION__;
+                $return_data['user_id'] = $auth_id;
+
+                // if user have no chat status
+                $chatStatus = ChatStatus::findByUserId($auth_id);
+                $result = !is_null($chatStatus) ? $chatStatus->setAsOffline() : ChatStatus::createOnlineUser($auth_id);
+
+                $return_data['result'] = !is_null($result);
+
+                $client->send(json_encode($return_data));
+            }
+        }
     }
 
     public function onSendMessage(ConnectionInterface $from, $data)

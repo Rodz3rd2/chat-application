@@ -15,6 +15,11 @@ class User extends UserModel
         return $this->hasMany('App\Models\Message', "sender_id");
     }
 
+    public function chatStatus()
+    {
+        return $this->hasOne('App\Models\ChatStatus');
+    }
+
     public function numberOfUnread($receiver_id)
     {
         return $this->messages()

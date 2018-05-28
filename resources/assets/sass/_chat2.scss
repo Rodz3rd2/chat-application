@@ -67,7 +67,7 @@ body {
 }
 
 #frame #sidepanel #profile.expanded .wrap {
-    height: 210px;
+    height: 120px;
     line-height: initial;
 }
 
@@ -434,7 +434,7 @@ body {
 
 #frame #sidepanel #contacts ul li.contact.active {
     background: #32465a;
-    border-right: 5px solid #435f7a;
+    // border-right: 5px solid #435f7a;
 }
 
 #frame #sidepanel #contacts ul li.contact.active span.contact-status {

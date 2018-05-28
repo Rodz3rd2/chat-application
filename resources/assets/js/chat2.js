@@ -23,6 +23,7 @@ var Chat2 = {
 
     onOpen: function(e) {
         console.log("Connection established!");
+        Chat2.conn.send(JSON.stringify({event: Chat2Events.ON_CONNECTION_ESTABLISH}));
     },
 
     onMessage: function(e) {
@@ -57,29 +58,6 @@ var Chat2 = {
 
         var sender_id = $('#contacts .contact.active').data('id');
         Chat2.conn.send(JSON.stringify({event: Chat2Events.ON_READ_MESSAGE, sender_id: sender_id}));
-    },
-
-    selectStatus: function() {
-        $("#profile-img").removeClass();
-        $("#status-online").removeClass("active");
-        $("#status-away").removeClass("active");
-        $("#status-busy").removeClass("active");
-        $("#status-offline").removeClass("active");
-        $(this).addClass("active");
-
-        if ($("#status-online").hasClass("active")) {
-            $("#profile-img").addClass("online");
-        } else if ($("#status-away").hasClass("active")) {
-            $("#profile-img").addClass("away");
-        } else if ($("#status-busy").hasClass("active")) {
-            $("#profile-img").addClass("busy");
-        } else if ($("#status-offline").hasClass("active")) {
-            $("#profile-img").addClass("offline");
-        } else {
-            $("#profile-img").removeClass();
-        }
-
-        $("#status-options").removeClass("active");
     },
 
     typing: function(e) {
@@ -134,10 +112,32 @@ var Chat2 = {
 };
 
 var Chat2Events = {
+    ON_CONNECTION_ESTABLISH: "onConnectionEstablish",
+    ON_DISCONNECT: "onDisconnect",
     ON_SEND_MESSAGE: "onSendMessage",
     ON_TYPING: "onTyping",
     ON_STOP_TYPING: "onStopTyping",
     ON_READ_MESSAGE: "onReadMessage",
+
+    onConnectionEstablish: function(data) {
+        if (data.result) {
+            var contact_status = $('.contact[data-id="'+data.user_id+'"] .contact-status');
+
+            if (!contact_status.hasClass('online')) {
+                $('.contact[data-id="'+data.user_id+'"] .contact-status').addClass("online");
+            }
+        }
+    },
+
+    onDisconnect: function(data) {
+        if (data.result) {
+            var contact_status = $('.contact[data-id="'+data.user_id+'"] .contact-status');
+
+            if (contact_status.hasClass('online')) {
+                $('.contact[data-id="'+data.user_id+'"] .contact-status').removeClass("online");
+            }
+        }
+    },
 
     onSendMessage: function(data) {
         var sent_tmpl = _.template($('#message-sent-tmpl').html());

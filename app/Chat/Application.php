@@ -36,6 +36,8 @@ class Application extends Events implements MessageComponentInterface {
         $key = array_search($conn, $this->clients);
         unset($this->clients[$key]);
 
+        $this->onDisconnect($conn, "");
+
         echo "Clients number: " . count($this->clients) . PHP_EOL;
         echo "Connection {$conn->resourceId} has disconnected\n";
     }
