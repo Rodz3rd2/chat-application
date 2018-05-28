@@ -13,19 +13,10 @@ class Message extends Model
         return $this->belongsTo('App\Models\User', "sender_id");
     }
 
-    /**
-     * Use on twig view
-     * @return [object] Conversation of two users
-     */
-    public static function conversation()
+    public static function conversation($sender_id, $receiver_id)
     {
-        $args = func_get_args();
-        list($sender_id, $receiver_id) = $args[0];
-
         return static::where('sender_id', $sender_id)
-                ->orWhere('receiver_id', $sender_id)
                 ->orWhere('sender_id', $receiver_id)
-                ->orWhere('receiver_id', $receiver_id)
                 ->get();
     }
 

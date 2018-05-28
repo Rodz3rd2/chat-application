@@ -149,4 +149,21 @@ class Events
             $from->send(json_encode($return_data));
         }
     }
+
+    public function onFetchMessages(ConnectionInterface $from, $data)
+    {
+        $this->onReadMessage($from, $data);
+
+        parse_str($from->httpRequest->getUri()->getQuery(), $params);
+
+        $auth_id = $params['auth_id'];
+        $sender_id = $data->sender_id;
+
+        $conversation = Message::conversation([$sender_id, $auth_id]);
+
+        $return_data['event'] = __FUNCTION__;
+        $return_data['conversation'] = $conversation;
+
+        $from->send(json_encode($return_data));
+    }
 }

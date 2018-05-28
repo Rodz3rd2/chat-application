@@ -26,7 +26,13 @@
                             <div class="meta">
                                 <i class="badge">{{ contact.numberOfUnread(auth_user.get.id) }}</i>
                                 <p class="name">{{ contact.getFullName() }}</p>
-                                <p class="preview"></p>
+                                <p class="preview">
+                                    {% if contact.messages().get().isNotEmpty() %}
+                                        {{ contact.messages().get().last().sender_id == auth_user.get.id ? "<span>You: </span>" }}
+                                        {{ contact.messages().get().last().message }}
+                                        {{ contact.messages().get().last() | json_encode }}
+                                    {% endif %}
+                                </p>
                             </div>
                         </div>
                     </li>
@@ -41,10 +47,8 @@
         </div>
         <div class="messages">
             <ul>
-                {% set conversation = Model_Message('conversation', auth_user.get.id, contacts[0].id) %}
-
-                {% if conversation.isNotEmpty() %}
-                    {% for convo in conversation %}
+                {% if initial_conversation.isNotEmpty() %}
+                    {% for convo in initial_conversation %}
                         <li class="{{ convo.user.id == auth_user.get.id ? "sent" : "replies" }}">
                             <img src="{{ convo.user.picture }}" alt="" />
                             <p>{{ convo.message }}</p>

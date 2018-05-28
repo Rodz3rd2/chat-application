@@ -57,7 +57,7 @@ var Chat2 = {
         $('.contact-profile p').text(name);
 
         var sender_id = $('#contacts .contact.active').data('id');
-        Chat2.conn.send(JSON.stringify({event: Chat2Events.ON_READ_MESSAGE, sender_id: sender_id}));
+        Chat2.conn.send(JSON.stringify({event: Chat2Events.ON_FETCH_MESSAGES, sender_id: sender_id}));
     },
 
     typing: function(e) {
@@ -118,6 +118,7 @@ var Chat2Events = {
     ON_TYPING: "onTyping",
     ON_STOP_TYPING: "onStopTyping",
     ON_READ_MESSAGE: "onReadMessage",
+    ON_FETCH_MESSAGES: "onFetchMessages",
 
     onConnectionEstablish: function(data) {
         if (data.result) {
@@ -180,8 +181,11 @@ var Chat2Events = {
 
     onReadMessage: function(data) {
         var sender_id = data.sender_id;
-
         $('.contact[data-id="'+sender_id+'"] .badge').text("0");
+    },
+
+    onFetchMessages: function(data) {
+        console.log(data);
     }
 };
 
