@@ -215,14 +215,30 @@ var Chat2Events = {
         $('.contact[data-id="'+sender_id+'"] .badge').text("0");
     },
 
-    onFetchMessages: function(conversation) {
-        console.log(conversation);
-        // $('.messages ul').html("");
+    onFetchMessages: function(data) {
+        var conversation = data.conversation;
 
-        // for (var i in conversation) {
+        $('.messages ul').html("");
 
-        //     $('.messages ul').append()
-        // }
+        if (conversation.length > 0) {
+            var sent_tmpl = _.template($('#message-sent-tmpl').html());
+            var replied_tmpl = _.template($('#message-replied-tmpl').html());
+            var message;
+
+            for (var i in conversation) {
+                message = conversation[i];
+
+                if (message.sender.id == chat.auth_id) {
+                    $('.messages ul').append(sent_tmpl({'message': message.message, 'picture': message.sender.picture}));
+                } else {
+                    $('.messages ul').append(replied_tmpl({'message': message.message, 'picture': message.receiver.picture}));
+                }
+            }
+
+            Chat2.scrollDown();
+        } else {
+            $('.messages ul').html('<li class="no-conversation">No conversation.</li>');
+        }
     }
 };
 
