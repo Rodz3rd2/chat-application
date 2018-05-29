@@ -243,18 +243,13 @@ var Chat2Events = {
         $('.messages ul').html("");
 
         if (Object.keys(conversation).length > 0) {
-            var sent_tmpl = _.template($('#message-sent-tmpl').html());
-            var replied_tmpl = _.template($('#message-replied-tmpl').html());
-            var message;
-
             for (var i in conversation) {
-                message = conversation[i];
+                var message = conversation[i],
+                    tmpl_func = message.sender.id == chat.auth_id ?
+                                 _.template($('#message-sent-tmpl').html()) :
+                                 _.template($('#message-replied-tmpl').html());
 
-                if (message.sender.id == chat.auth_id) {
-                    $('.messages ul').append(sent_tmpl({'message': message.message, 'picture': message.sender.picture}));
-                } else {
-                    $('.messages ul').append(replied_tmpl({'message': message.message, 'picture': message.receiver.picture}));
-                }
+                $('.messages ul').prepend(tmpl_func({'message': message.message, 'picture': message.sender.picture}));
             }
 
             Chat2.scrollDown();
