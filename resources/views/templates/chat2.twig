@@ -27,10 +27,11 @@
                                 <i class="badge">{{ contact.numberOfUnread(auth_user.get.id) }}</i>
                                 <p class="name">{{ contact.getFullName() }}</p>
                                 <p class="preview">
-                                    {% if contact.messages().get().isNotEmpty() %}
-                                        {{ contact.messages().get().last().sender_id == auth_user.get.id ? "<span>You: </span>" }}
-                                        {{ contact.messages().get().last().message }}
-                                        {{ contact.messages().get().last() | json_encode }}
+                                    {% set conversation = ClassStaticMethod(namespace ~ "\\Models\\Message", "conversation", auth_user.get.id, contact.id) %}
+
+                                    {% if conversation.isNotEmpty() %}
+                                        {{ conversation.last().sender_id == auth_user.get.id ? "<span>You: </span>" }}
+                                        {{ conversation.last().message }}
                                     {% endif %}
                                 </p>
                             </div>
@@ -49,8 +50,8 @@
             <ul>
                 {% if initial_conversation.isNotEmpty() %}
                     {% for convo in initial_conversation %}
-                        <li class="{{ convo.user.id == auth_user.get.id ? "sent" : "replies" }}">
-                            <img src="{{ convo.user.picture }}" alt="" />
+                        <li class="{{ convo.sender.id == auth_user.get.id ? "sent" : "replies" }}">
+                            <img src="{{ convo.sender.picture }}" alt="" />
                             <p>{{ convo.message }}</p>
                         </li>
                     {% endfor %}

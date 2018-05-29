@@ -39,18 +39,24 @@ var Chat2 = {
         $('.contact-profile p').text(name);
 
         var sender_id = $('#contacts .contact.active').data('id');
-        Chat2Events.send({event: Chat2Events.ON_FETCH_MESSAGES, sender_id: sender_id});
+        var data = {
+            event: Chat2Events.ON_FETCH_MESSAGES,
+            sender_id: sender_id
+        };
+
+        Chat2Events.send(data);
     },
 
     typing: function(e) {
         var receiver_id = $('#contacts .contact.active').data('id');
         var key_code = e.which;
+        var data = {receiver_id: receiver_id};
 
         // initial typing
         if (Chat2.is_initial_typing) {
             Chat2.is_initial_typing = false;
 
-            Chat2Events.send({event: Chat2Events.ON_TYPING, receiver_id: receiver_id});
+            Chat2Events.send($.extend({event: Chat2Events.ON_TYPING}, data));
         }
 
         // when stop typing
@@ -58,7 +64,7 @@ var Chat2 = {
         Chat2.typing_delay = _.delay(function() {
             Chat2.is_initial_typing = true;
 
-            Chat2Events.send({event: Chat2Events.ON_STOP_TYPING, receiver_id: receiver_id});
+            Chat2Events.send($.extend({event: Chat2Events.ON_STOP_TYPING}, data));
         }, 3000);
 
         if (key_code === Chat2.ENTER) {
