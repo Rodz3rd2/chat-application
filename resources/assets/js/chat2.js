@@ -16,25 +16,7 @@ var Chat2 = {
         $('#input-message').keyup(Chat2.typing);
         $('button.submit').click(Chat2.send);
 
-        Chat2.conn = new WebSocket("ws://"+chat.hostname+":"+chat.port+"?auth_id="+chat.auth_id);
-        Chat2.conn.onopen = Chat2.onOpen;
-        Chat2.conn.onmessage = Chat2.onMessage;
-    },
-
-    onOpen: function(e) {
-        console.log("Connection established!");
-        Chat2.conn.send(JSON.stringify({event: Chat2Events.ON_CONNECTION_ESTABLISH}));
-    },
-
-    onMessage: function(e) {
-        var parse_data = JSON.parse(e.data);
-
-        var event = parse_data.event;
-        delete parse_data.event;
-
-        console.log(event, parse_data);
-
-        Chat2Events[event](parse_data);
+        Chat2Events.init();
     },
 
     showStatusOptions: function() {
@@ -57,7 +39,7 @@ var Chat2 = {
         $('.contact-profile p').text(name);
 
         var sender_id = $('#contacts .contact.active').data('id');
-        Chat2.conn.send(JSON.stringify({event: Chat2Events.ON_FETCH_MESSAGES, sender_id: sender_id}));
+        Chat2Events.send({event: Chat2Events.ON_FETCH_MESSAGES, sender_id: sender_id});
     },
 
     typing: function(e) {
@@ -68,7 +50,7 @@ var Chat2 = {
         if (Chat2.is_initial_typing) {
             Chat2.is_initial_typing = false;
 
-            Chat2.conn.send(JSON.stringify({event: Chat2Events.ON_TYPING, receiver_id: receiver_id}));
+            Chat2Events.send({event: Chat2Events.ON_TYPING, receiver_id: receiver_id});
         }
 
         // when stop typing
@@ -76,7 +58,7 @@ var Chat2 = {
         Chat2.typing_delay = _.delay(function() {
             Chat2.is_initial_typing = true;
 
-            Chat2.conn.send(JSON.stringify({event: Chat2Events.ON_STOP_TYPING, receiver_id: receiver_id}));
+            Chat2Events.send({event: Chat2Events.ON_STOP_TYPING, receiver_id: receiver_id});
         }, 3000);
 
         if (key_code === Chat2.ENTER) {
@@ -99,7 +81,7 @@ var Chat2 = {
                 // chat_lastname: chat.last_name
             };
 
-            Chat2.conn.send(JSON.stringify(data));
+            Chat2Events.send(data);
         }
 
         $('#input-message').val("");
@@ -119,6 +101,46 @@ var Chat2Events = {
     ON_STOP_TYPING: "onStopTyping",
     ON_READ_MESSAGE: "onReadMessage",
     ON_FETCH_MESSAGES: "onFetchMessages",
+
+    init: function() {
+        Chat2Events.conn = new WebSocket("ws://"+chat.hostname+":"+chat.port+"?auth_id="+chat.auth_id);
+        Chat2Events.conn.onopen = Chat2Events.onOpen;
+        Chat2Events.conn.onmessage = Chat2Events.onMessage;
+    },
+
+    /**
+     * Event Handler
+     */
+    send: function(data, errorCallback) {
+        if (Chat2Events.conn.readyState === 1) { // open state
+            Chat2Events.conn.send(JSON.stringify(data));
+        } else {
+            if (typeof(errorCallback) !== "undefined") {
+                errorCallback();
+            } else {
+                console.log("The server is disconnect.");
+            }
+        }
+    },
+
+    /**
+     * Event Listener
+     */
+    onOpen: function(e) {
+        console.log("Connection established!");
+        Chat2Events.send({event: Chat2Events.ON_CONNECTION_ESTABLISH});
+    },
+
+    onMessage: function(e) {
+        var parse_data = JSON.parse(e.data);
+
+        var event = parse_data.event;
+        delete parse_data.event;
+
+        console.log(event, parse_data);
+
+        Chat2Events[event](parse_data);
+    },
 
     onConnectionEstablish: function(data) {
         if (data.result) {
