@@ -12,7 +12,7 @@ class ChatController extends BaseController
 	public function index($request, $response)
 	{
         $contacts = User::contacts()->get();
-        $initial_conversation = Message::conversation([Auth::user()->id, $contacts->first()->id]);
+        $initial_conversation = Message::conversation([Auth::user()->id, $contacts->first()->id])->get();
 
 		return $this->view->render($response, "index.twig", compact('contacts', 'initial_conversation'));
 	}

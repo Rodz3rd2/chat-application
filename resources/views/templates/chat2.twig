@@ -27,7 +27,7 @@
                                 <i class="badge">{{ contact.numberOfUnread(auth_user.get.id) }}</i>
                                 <p class="name">{{ contact.getFullName() }}</p>
                                 <p class="preview">
-                                    {% set conversation = ClassStaticMethod(namespace ~ "\\Models\\Message", "conversation", auth_user.get.id, contact.id) %}
+                                    {% set conversation = ClassStaticMethod(namespace ~ "\\Models\\Message", "conversation", auth_user.get.id, contact.id).get() %}
 
                                     {% if conversation.isNotEmpty() %}
                                         {{ conversation.last().sender_id == auth_user.get.id ? "<span>You: </span>" }}

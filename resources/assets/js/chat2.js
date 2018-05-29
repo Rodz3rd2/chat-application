@@ -171,6 +171,7 @@ var Chat2Events = {
     onSendMessage: function(data) {
         var sent_tmpl = _.template($('#message-sent-tmpl').html());
         var replied_tmpl = _.template($('#message-replied-tmpl').html());
+        var message;
 
         if ($('.messages .no-conversation').length > 0) {
             $('.messages .no-conversation').remove();
@@ -178,20 +179,22 @@ var Chat2Events = {
 
         if (typeof(data.sender) !== "undefined") {
             var sender = data.sender;
+                message = sender.message;
 
             $('.messages ul li.typing').remove();
-            $('.contact[data-id="'+sender.receiver_id+'"] .preview').html('<span>You: </span>' + sender.message);
-            $('.messages ul').append(sent_tmpl({'message': sender.message, 'picture': sender.picture}));
+            $('.contact[data-id="'+message.receiver.id+'"] .preview').html('<span>You: </span>' + message.message);
+            $('.messages ul').append(sent_tmpl({'message': message.message, 'picture': message.sender.picture}));
         }
 
         // if receiver online
         if (typeof(data.receiver) !== "undefined") {
             var receiver = data.receiver;
+                message = receiver.message;
 
             $('.messages ul li.typing').remove();
-            $('.contact[data-id="'+receiver.sender_id+'"] .badge').html(receiver.number_unread);
-            $('.contact[data-id="'+receiver.sender_id+'"] .preview').html(receiver.message);
-            $('.messages ul').append(replied_tmpl({'message': receiver.message, 'picture': receiver.picture}));
+            $('.contact[data-id="'+message.sender.id+'"] .badge').html(receiver.number_unread);
+            $('.contact[data-id="'+message.sender.id+'"] .preview').html(message.message);
+            $('.messages ul').append(replied_tmpl({'message': message.message, 'picture': message.sender.picture}));
         }
     },
 
@@ -212,8 +215,14 @@ var Chat2Events = {
         $('.contact[data-id="'+sender_id+'"] .badge').text("0");
     },
 
-    onFetchMessages: function(data) {
-        console.log(data);
+    onFetchMessages: function(conversation) {
+        console.log(conversation);
+        // $('.messages ul').html("");
+
+        // for (var i in conversation) {
+
+        //     $('.messages ul').append()
+        // }
     }
 };
 

@@ -70,20 +70,26 @@ class Events
         $sender_id = $params['auth_id'];
         $receiver_id = $data->receiver_id;
 
-        $is_sent = Message::sendMessage($data->message, $sender_id, $receiver_id);
+        $message = Message::sendMessage($data->message, $sender_id, $receiver_id);
         $user_sender = User::find($sender_id);
         $user_receiver = User::find($receiver_id);
 
-        if (!is_null($is_sent))
+        if (!is_null($message))
         {
+            $message = Message::messageWithSenderAndReceiver($message->id);
+
             // self
             $return_data['event'] = __FUNCTION__;
 
+            // $return_data['sender'] = [
+            //     'message' => $message->message,
+            //     'receiver_id' => $receiver_id,
+            //     'picture' => $user_sender->picture
+            // ];
             $return_data['sender'] = [
-                'message' => $data->message,
-                'receiver_id' => $receiver_id,
-                'picture' => $user_sender->picture
+                'message' => $message
             ];
+
             $from->send(json_encode($return_data));
             unset($return_data['sender']);
 
@@ -93,9 +99,7 @@ class Events
                 $receiver = $this->clients[$receiver_id];
 
                 $return_data['receiver'] = [
-                    'message' => $data->message,
-                    'sender_id' => $sender_id,
-                    'picture' => $user_sender->picture,
+                    'message' => $message,
                     'number_unread' => $user_sender->numberOfUnread($receiver_id)
                 ];
 
@@ -159,7 +163,9 @@ class Events
         $auth_id = $params['auth_id'];
         $sender_id = $data->sender_id;
 
-        $conversation = Message::conversation([$sender_id, $auth_id]);
+        $conversation = Message::conversation([$sender_id, $auth_id])
+                            ->with(['sender', 'receiver'])
+                            ->get();
 
         $return_data['event'] = __FUNCTION__;
         $return_data['conversation'] = $conversation;
