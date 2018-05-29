@@ -32,20 +32,24 @@ var Chat2 = {
     selectContact: function() {
         var img = $(this).find('.image').attr('src');
         var name = $(this).find('.name').text();
+        var selected_contact = $('.contact-profile :input[name="selected-user-id"]').val();
 
         $('#contacts .contact').removeClass('active');
         $(this).addClass('active');
-
-        $('.contact-profile img').attr('src', img);
-        $('.contact-profile p').text(name);
-
         var sender_id = $('#contacts .contact.active').data('id');
-        var data = {
-            event: Chat2Events.ON_FETCH_MESSAGES,
-            sender_id: sender_id
-        };
 
-        Chat2Events.send(data);
+        if (selected_contact != sender_id) {
+            $('.contact-profile img').attr('src', img);
+            $('.contact-profile p').text(name);
+            $('.contact-profile :input[name="selected-user-id"]').val(sender_id);
+
+            var data = {
+                event: Chat2Events.ON_FETCH_MESSAGES,
+                sender_id: sender_id
+            };
+
+            Chat2Events.send(data);
+        }
     },
 
     typing: function(e) {
@@ -264,18 +268,13 @@ var Chat2Events = {
         var conversation = data.conversation;
 
         if (Object.keys(conversation).length > 0) {
-            var sent_tmpl = _.template($('#message-sent-tmpl').html());
-            var replied_tmpl = _.template($('#message-replied-tmpl').html());
-            var message;
-
             for (var i in conversation) {
-                message = conversation[i];
+                var message = conversation[i],
+                    tmpl_func = message.sender.id == chat.auth_id ?
+                                 _.template($('#message-sent-tmpl').html()) :
+                                 _.template($('#message-replied-tmpl').html());
 
-                if (message.sender.id == chat.auth_id) {
-                    $('.messages ul').prepend(sent_tmpl({'message': message.message, 'picture': message.sender.picture}));
-                } else {
-                    $('.messages ul').prepend(replied_tmpl({'message': message.message, 'picture': message.receiver.picture}));
-                }
+                $('.messages ul').prepend(tmpl_func({'message': message.message, 'picture': message.sender.picture}));
             }
         } else {
             Chat2Events.load_more_increment = -1;

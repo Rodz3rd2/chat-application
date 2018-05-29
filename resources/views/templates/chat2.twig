@@ -43,8 +43,9 @@
     </div>
     <div class="content">
         <div class="contact-profile">
-            <img src="{{ contacts[0].picture }}" alt="" />
-            <p>{{ contacts[0].getFullName() }}</p>
+            <input type="hidden" name="selected-user-id" value="{{ contacts.first().id }}">
+            <img src="{{ contacts.first().picture }}" alt="" />
+            <p>{{ contacts.first().getFullName() }}</p>
         </div>
         <div class="messages">
             <ul>

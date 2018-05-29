@@ -165,8 +165,8 @@ class Events
                             ->get()
                             ->sortBy('id');
 
-        echo "<pre>";
-        var_dump($conversation->pluck('id'));
+        // echo "<pre>";
+        // var_dump($conversation->pluck('id'));
 
         $return_data['event'] = __FUNCTION__;
         $return_data['conversation'] = $conversation;
@@ -192,8 +192,8 @@ class Events
                             ->get()
                             ->sortBy('id');
 
-        echo "<pre>";
-        var_dump($conversation->pluck('id'));
+        // echo "<pre>";
+        // var_dump($conversation->pluck('id'));
 
         $return_data['event'] = __FUNCTION__;
         $return_data['conversation'] = $conversation;
