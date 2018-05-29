@@ -81,11 +81,6 @@ class Events
             // self
             $return_data['event'] = __FUNCTION__;
 
-            // $return_data['sender'] = [
-            //     'message' => $message->message,
-            //     'receiver_id' => $receiver_id,
-            //     'picture' => $user_sender->picture
-            // ];
             $return_data['sender'] = [
                 'message' => $message
             ];
