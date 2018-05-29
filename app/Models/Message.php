@@ -8,6 +8,8 @@ class Message extends Model
 {
     protected $fillable = ['message', 'sender_id', 'receiver_id', 'is_read'];
 
+    const DEFAULT_CONVERSATION_LENGTH = 5;
+
     public function sender()
     {
         return $this->belongsTo('App\Models\User', "sender_id");

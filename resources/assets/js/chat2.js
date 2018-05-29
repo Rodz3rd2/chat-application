@@ -15,6 +15,7 @@ var Chat2 = {
         $("#status-options ul li").click(Chat2.selectStatus);
         $('#input-message').keyup(Chat2.typing);
         $('button.submit').click(Chat2.send);
+        $('.messages').scroll(Chat2.loadMoreMessages);
 
         Chat2Events.init();
     },
@@ -93,6 +94,19 @@ var Chat2 = {
         $('#input-message').val("");
     },
 
+    loadMoreMessages: function() {
+        if ($(this).scrollTop() === 0 && Chat2Events.load_more_increment !== -1) {
+            var sender_id = $('#contacts .contact.active').data('id');
+            var data = {
+                event: Chat2Events.ON_LOAD_MORE_MESSAGES,
+                sender_id: sender_id,
+                load_more_increment: ++Chat2Events.load_more_increment
+            };
+
+            Chat2Events.send(data);
+        }
+    },
+
     scrollDown: function() {
         var bottom = $('.messages').prop('scrollHeight');
         $('.messages').animate({scrollTop: bottom});
@@ -107,6 +121,9 @@ var Chat2Events = {
     ON_STOP_TYPING: "onStopTyping",
     ON_READ_MESSAGE: "onReadMessage",
     ON_FETCH_MESSAGES: "onFetchMessages",
+    ON_LOAD_MORE_MESSAGES: "onLoadMoreMessages",
+
+    load_more_increment: 0,
 
     init: function() {
         Chat2Events.conn = new WebSocket("ws://"+chat.hostname+":"+chat.port+"?auth_id="+chat.auth_id);
@@ -217,10 +234,11 @@ var Chat2Events = {
 
     onFetchMessages: function(data) {
         var conversation = data.conversation;
+        console.log(conversation);
 
         $('.messages ul').html("");
 
-        if (conversation.length > 0) {
+        if (Object.keys(conversation).length > 0) {
             var sent_tmpl = _.template($('#message-sent-tmpl').html());
             var replied_tmpl = _.template($('#message-replied-tmpl').html());
             var message;
@@ -236,8 +254,31 @@ var Chat2Events = {
             }
 
             Chat2.scrollDown();
+            Chat2Events.load_more_increment = 0;
         } else {
             $('.messages ul').html('<li class="no-conversation">No conversation.</li>');
+        }
+    },
+
+    onLoadMoreMessages: function(data) {
+        var conversation = data.conversation;
+
+        if (Object.keys(conversation).length > 0) {
+            var sent_tmpl = _.template($('#message-sent-tmpl').html());
+            var replied_tmpl = _.template($('#message-replied-tmpl').html());
+            var message;
+
+            for (var i in conversation) {
+                message = conversation[i];
+
+                if (message.sender.id == chat.auth_id) {
+                    $('.messages ul').prepend(sent_tmpl({'message': message.message, 'picture': message.sender.picture}));
+                } else {
+                    $('.messages ul').prepend(replied_tmpl({'message': message.message, 'picture': message.receiver.picture}));
+                }
+            }
+        } else {
+            Chat2Events.load_more_increment = -1;
         }
     }
 };

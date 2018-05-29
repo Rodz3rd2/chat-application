@@ -160,7 +160,40 @@ class Events
 
         $conversation = Message::conversation([$sender_id, $auth_id])
                             ->with(['sender', 'receiver'])
-                            ->get();
+                            ->orderBy('id', "DESC")
+                            ->limit(Message::DEFAULT_CONVERSATION_LENGTH)
+                            ->get()
+                            ->sortBy('id');
+
+        echo "<pre>";
+        var_dump($conversation->pluck('id'));
+
+        $return_data['event'] = __FUNCTION__;
+        $return_data['conversation'] = $conversation;
+
+        $from->send(json_encode($return_data));
+    }
+
+    public function onLoadMoreMessages(ConnectionInterface $from, $data)
+    {
+        $this->onReadMessage($from, $data);
+
+        parse_str($from->httpRequest->getUri()->getQuery(), $params);
+
+        $auth_id = $params['auth_id'];
+        $sender_id = $data->sender_id;
+        $load_more_increment = $data->load_more_increment;
+
+        $conversation = Message::conversation([$sender_id, $auth_id])
+                            ->with(['sender', 'receiver'])
+                            ->orderBy('id', "DESC")
+                            ->offset(Message::DEFAULT_CONVERSATION_LENGTH * $load_more_increment)
+                            ->limit(Message::DEFAULT_CONVERSATION_LENGTH)
+                            ->get()
+                            ->sortBy('id');
+
+        echo "<pre>";
+        var_dump($conversation->pluck('id'));
 
         $return_data['event'] = __FUNCTION__;
         $return_data['conversation'] = $conversation;
