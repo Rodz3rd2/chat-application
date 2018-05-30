@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\ChatStatus;
 use AuthSlim\User\Auth\Auth;
 use AuthSlim\User\Models\User as UserModel;
 use Illuminate\Database\Eloquent\Model;
@@ -32,5 +33,13 @@ class User extends UserModel
     public static function contacts()
     {
         return static::where('id', "<>", Auth::user()->id);
+    }
+
+    public static function contactsOrderByOnlineStatus()
+    {
+        return static::select(['users.*', 'chat_statuses.status'])
+            ->where('users.id', "<>", Auth::user()->id)
+            ->leftJoin('chat_statuses', "users.id", "=", "chat_statuses.user_id")
+            ->orderByRaw('FIELD(chat_statuses.status, "offline", "online") DESC');
     }
 }

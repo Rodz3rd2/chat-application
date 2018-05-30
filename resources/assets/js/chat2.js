@@ -171,9 +171,15 @@ var Chat2Events = {
 
     onConnectionEstablish: function(data) {
         if (data.result) {
-            var contact_status = $('.contact[data-id="'+data.user_id+'"] .contact-status');
+            var contact_status = $('.contact[data-id="'+data.user_id+'"]');
 
             if (!contact_status.hasClass('online')) {
+                var tmpl = $('.contact[data-id="'+data.user_id+'"]').wrap("<div></div>").parent().html();
+
+                // move new online to top
+                $('.contact[data-id="'+data.user_id+'"]').remove();
+                $('#contacts ul').prepend(tmpl);
+
                 $('.contact[data-id="'+data.user_id+'"] .contact-status').addClass("online");
             }
         }

@@ -9,15 +9,16 @@ use FrameworkCore\BaseController;
 
 class ChatController extends BaseController
 {
-	public function index($request, $response)
-	{
-        $contacts = User::contacts()->get();
-        $initial_conversation = Message::conversation([Auth::user()->id, $contacts->first()->id])
-                                        ->orderBy('id', "DESC")
-                                        ->limit(Message::DEFAULT_CONVERSATION_LENGTH)
-                                        ->get()
-                                        ->sortBy('id');
+    public function index($request, $response)
+    {
+        $contacts = User::contactsOrderByOnlineStatus()->get();
 
-		return $this->view->render($response, "index.twig", compact('contacts', 'initial_conversation'));
-	}
+        $initial_conversation = Message::conversation([Auth::user()->id, $contacts->first()->id])
+                                ->orderBy('id', "DESC")
+                                ->limit(Message::DEFAULT_CONVERSATION_LENGTH)
+                                ->get()
+                                ->sortBy('id');
+
+    	return $this->view->render($response, "index.twig", compact('contacts', 'initial_conversation'));
+    }
 }

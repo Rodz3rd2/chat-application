@@ -3,7 +3,7 @@
         <div id="profile">
             <div class="wrap">
                 <img id="profile-img" src="{{ img(auth_user.get.picture) }}" class="online" alt="" />
-                <p>{{ auth_user.get.getFullName() }}</p>
+                <p>{{ auth_user.get.getFullName() }}  {{ contacts.count() }}</p>
                 <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
                 <div id="expanded">
                     <a href="javascript:void(0)" class="btn-signout" onclick="document.getElementById('logout-form').submit();">
@@ -21,7 +21,7 @@
                 {% for index, contact in contacts %}
                     <li class="contact {{ index == 0 ? "active" }}" data-id="{{ contact.id }}">
                         <div class="wrap">
-                            <span class="contact-status {{ contact.chatStatus.isOnline() ? "online" }}"></span>
+                            <span class="contact-status {{ contact.status == constant(namespace ~ "\\Models\\ChatStatus::ONLINE_STATUS") ? "online" }}"></span>
                             <img class="image" src="{{ contact.picture }}" alt="" />
                             <div class="meta">
                                 <i class="badge">{{ contact.numberOfUnread(auth_user.get.id) }}</i>
