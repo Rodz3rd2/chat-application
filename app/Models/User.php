@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\ChatStatus;
 use AuthSlim\User\Auth\Auth;
 use AuthSlim\User\Models\User as UserModel;
+use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends UserModel
@@ -37,9 +38,16 @@ class User extends UserModel
 
     public static function contactsOrderByOnlineStatus()
     {
-        return static::select(['users.*', 'chat_statuses.status'])
-            ->where('users.id', "<>", Auth::user()->id)
-            ->leftJoin('chat_statuses', "users.id", "=", "chat_statuses.user_id")
-            ->orderByRaw('FIELD(chat_statuses.status, "offline", "online") DESC');
+        return static::select(DB::raw("users.*, chat_statuses.status"))
+                    ->leftJoin('chat_statuses', "users.id", "=", "chat_statuses.user_id")
+                    ->leftJoin(DB::raw("
+                        (SELECT m.* FROM messages m
+                            LEFT JOIN messages m2 ON m.sender_id = m2.sender_id AND m2.created_at > m.created_at
+                            WHERE m2.id IS NULL
+                        ) m"), "users.id", "=", "m.sender_id")
+                    ->where('users.id', "<>", Auth::user()->id)
+                    ->orderByRaw("FIELD(m.is_read, ".Message::IS_READ.", ".Message::IS_UNREAD.") DESC,
+                                FIELD(chat_statuses.status, '".ChatStatus::OFFLINE_STATUS."', '".ChatStatus::ONLINE_STATUS."') DESC,
+                                m.created_at DESC");
     }
 }

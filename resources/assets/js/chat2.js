@@ -11,7 +11,7 @@ var Chat2 = {
 
         $("#profile-img").click(Chat2.showStatusOptions);
         $(".expand-button").click(Chat2.expandButton);
-        $('#contacts .contact').click(Chat2.selectContact);
+        $('#contacts').on("click", ".contact", Chat2.selectContact);
         $("#status-options ul li").click(Chat2.selectStatus);
         $('#input-message').keyup(Chat2.typing);
         $('button.submit').click(Chat2.send);
@@ -38,6 +38,8 @@ var Chat2 = {
         $(this).addClass('active');
         var sender_id = $('#contacts .contact.active').data('id');
 
+        console.log(selected_contact, sender_id);
+
         if (selected_contact != sender_id) {
             $('.contact-profile img').attr('src', img);
             $('.contact-profile p').text(name);
@@ -49,6 +51,8 @@ var Chat2 = {
             };
 
             Chat2Events.send(data);
+        } else {
+            console.log(selected_contact, sender_id);
         }
     },
 
@@ -172,16 +176,20 @@ var Chat2Events = {
     onConnectionEstablish: function(data) {
         if (data.result) {
             var contact_status = $('.contact[data-id="'+data.user_id+'"]');
+            var tmpl = $('.contact[data-id="'+data.user_id+'"]').wrap("<div></div>").parent().html();
 
-            if (!contact_status.hasClass('online')) {
-                var tmpl = $('.contact[data-id="'+data.user_id+'"]').wrap("<div></div>").parent().html();
+            // remove div inside of ul
+            $('#contacts ul > div').remove();
 
-                // move new online to top
-                $('.contact[data-id="'+data.user_id+'"]').remove();
-                $('#contacts ul').prepend(tmpl);
-
-                $('.contact[data-id="'+data.user_id+'"] .contact-status').addClass("online");
+            // move new online to the last user's online
+            $('.contact[data-id="'+data.user_id+'"]').remove();
+            if ($('#contacts ul li .contact-status.online').length > 0) {
+                $('#contacts ul li .contact-status.online').last().closest('li').after(tmpl);
+            } else {
+                $('#contacts ul').html(tmpl);
             }
+
+            $('.contact[data-id="'+data.user_id+'"] .contact-status').addClass("online");
         }
     },
 
@@ -211,6 +219,8 @@ var Chat2Events = {
             $('.messages ul li.typing').remove();
             $('.contact[data-id="'+message.receiver.id+'"] .preview').html('<span>You: </span>' + message.message);
             $('.messages ul').append(sent_tmpl({'message': message.message, 'picture': message.sender.picture}));
+
+            Chat2.scrollDown();
         }
 
         // if receiver online
@@ -221,15 +231,20 @@ var Chat2Events = {
             $('.messages ul li.typing').remove();
             $('.contact[data-id="'+message.sender.id+'"] .badge').html(receiver.number_unread);
             $('.contact[data-id="'+message.sender.id+'"] .preview').html(message.message);
-            $('.messages ul').append(replied_tmpl({'message': message.message, 'picture': message.sender.picture}));
+
+            if ($('#contacts .contact.active').data('id') == data.sender_id) {
+                $('.messages ul').append(replied_tmpl({'message': message.message, 'picture': message.sender.picture}));
+                Chat2.scrollDown();
+            }
         }
     },
 
-    onTyping: function() {
+    onTyping: function(data) {
         var typing_tmpl = _.template($('#typing-tmpl').html());
 
-        if ($('.messages ul li.typing').length === 0) {
+        if ($('#contacts .contact.active').data('id') == data.sender_id && $('.messages ul li.typing').length === 0) {
             $('.messages ul').append(typing_tmpl());
+            Chat2.scrollDown();
         }
     },
 

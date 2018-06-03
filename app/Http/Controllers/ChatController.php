@@ -13,7 +13,7 @@ class ChatController extends BaseController
     {
         $contacts = User::contactsOrderByOnlineStatus()->get();
 
-        $initial_conversation = Message::conversation([Auth::user()->id, $contacts->first()->id])
+        $initial_conversation = Message::conversation([Auth::user()->id, $contacts[0]->id])
                                 ->orderBy('id', "DESC")
                                 ->limit(Message::DEFAULT_CONVERSATION_LENGTH)
                                 ->get()

@@ -8,6 +8,8 @@ class Message extends Model
 {
     protected $fillable = ['message', 'sender_id', 'receiver_id', 'is_read'];
 
+    const IS_READ = 1;
+    const IS_UNREAD = 0;
     const DEFAULT_CONVERSATION_LENGTH = 5;
 
     public function sender()

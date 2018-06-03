@@ -80,6 +80,7 @@ class Events
 
             // self
             $return_data['event'] = __FUNCTION__;
+            $return_data['sender_id'] = $sender_id;
 
             $return_data['sender'] = [
                 'message' => $message
@@ -106,6 +107,8 @@ class Events
 
     public function onTyping(ConnectionInterface $from, $data)
     {
+        parse_str($from->httpRequest->getUri()->getQuery(), $params);
+
         // mark unread as read
         $data->sender_id = $data->receiver_id;
         $this->onReadMessage($from, $data);
@@ -113,7 +116,10 @@ class Events
         // if receiver online
         if (isset($this->clients[$data->receiver_id]))
         {
-            $return_data['event'] = __FUNCTION__;
+            $return_data = [
+                'event' => __FUNCTION__,
+                'sender_id' => $params['auth_id']
+            ];
 
             $receiver = $this->clients[$data->receiver_id];
             $receiver->send(json_encode($return_data));

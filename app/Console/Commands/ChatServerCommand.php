@@ -14,7 +14,7 @@ class ChatServerCommand extends BaseCommand
 	 * Console command signature
 	 * @var string
 	 */
-	private $signature = "serve:chat";
+	private $signature = "serve:chat {--port=:Chat Application port}";
 
 	/**
 	 * Console command description
@@ -35,13 +35,15 @@ class ChatServerCommand extends BaseCommand
 	 */
 	public function handle($input, $output)
 	{
+		$port = $input->getOption('port');
+
 		$server = IoServer::factory(
 		    new HttpServer(
 		    	new WsServer(
 		    		new Application
 		    	)
 		    ),
-		    config('chat.port')
+		    !is_null($port) ? $port : config('chat.port')
 		);
 
 		$server->run();
