@@ -1,7 +1,4 @@
 var Chat2 = {
-    typing_delay: "",
-    is_initial_typing: true,
-
     init: function() {
         Chat2.scrollDown();
 
@@ -57,19 +54,19 @@ var Chat2 = {
         var data = {receiver_id: receiver_id};
 
         // initial typing
-        if (Chat2.is_initial_typing) {
-            Chat2.is_initial_typing = false;
+        if (Chat2Events.is_initial_typing) {
+            Chat2Events.is_initial_typing = false;
 
             Chat2Events.send($.extend({event: Chat2Events.ON_TYPING}, data));
         }
 
         // when stop typing
-        clearTimeout(Chat2.typing_delay);
-        Chat2.typing_delay = _.delay(function() {
-            Chat2.is_initial_typing = true;
+        clearTimeout(Chat2Events.typing_delay);
+        Chat2Events.typing_delay = _.delay(function() {
+            Chat2Events.is_initial_typing = true;
 
             Chat2Events.send($.extend({event: Chat2Events.ON_STOP_TYPING}, data));
-        }, Chat2Events.typing_delay);
+        }, Chat2Events.typing_delay_time);
 
         if (key_code === 13) { // hit enter
             Chat2.send();
@@ -126,7 +123,8 @@ var Chat2Events = {
     ON_FETCH_MESSAGES: "onFetchMessages",
     ON_LOAD_MORE_MESSAGES: "onLoadMoreMessages",
 
-    typing_delay: 3000, // 3 seconds
+    typing_delay: "",
+    typing_delay_time: 3000, // 3 seconds
     load_more_increment: 0,
 
     init: function() {
