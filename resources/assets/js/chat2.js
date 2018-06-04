@@ -1,6 +1,4 @@
 var Chat2 = {
-    ENTER: 13,
-
     typing_delay: "",
     is_initial_typing: true,
 
@@ -73,7 +71,7 @@ var Chat2 = {
             Chat2Events.send($.extend({event: Chat2Events.ON_STOP_TYPING}, data));
         }, Chat2Events.typing_delay);
 
-        if (key_code === Chat2.ENTER) {
+        if (key_code === 13) { // hit enter
             Chat2.send();
         }
     },
