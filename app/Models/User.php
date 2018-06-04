@@ -42,7 +42,7 @@ class User extends UserModel
                     ->leftJoin('chat_statuses', "users.id", "=", "chat_statuses.user_id")
                     ->leftJoin(DB::raw("
                         (SELECT m.* FROM messages m
-                            LEFT JOIN messages m2 ON m.sender_id = m2.sender_id AND m2.created_at > m.created_at
+                            LEFT JOIN messages m2 ON m.sender_id = m2.sender_id AND m2.id > m.id
                             WHERE m2.id IS NULL
                         ) m"), "users.id", "=", "m.sender_id")
                     ->where('users.id', "<>", Auth::user()->id)

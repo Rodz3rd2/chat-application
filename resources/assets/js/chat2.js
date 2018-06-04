@@ -84,6 +84,7 @@ var Chat2 = {
                 message: message
             };
 
+            $('button.submit').prop("disable", true);
             Chat2Events.send(data);
         }
 
@@ -122,6 +123,7 @@ var Chat2Events = {
     typing_delay: "",
     typing_delay_time: 3000, // 3 seconds
     load_more_increment: 0,
+    is_initial_typing: true,
 
     init: function() {
         Chat2Events.conn = new WebSocket("ws://"+chat.hostname+":"+chat.port+"?auth_id="+chat.auth_id);
@@ -209,6 +211,7 @@ var Chat2Events = {
             $('.messages ul li.typing').remove();
             $('.contact[data-id="'+message.receiver.id+'"] .preview').html('<span>You: </span>' + message.message);
             $('.messages ul').append(sent_tmpl({'message': message.message, 'picture': message.sender.picture}));
+            $('button.submit').prop("disable", false);
 
             Chat2.scrollDown();
         }
