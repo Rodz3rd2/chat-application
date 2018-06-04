@@ -12,7 +12,6 @@ var Chat2 = {
         $("#profile-img").click(Chat2.showStatusOptions);
         $(".expand-button").click(Chat2.expandButton);
         $('#contacts').on("click", ".contact", Chat2.selectContact);
-        $("#status-options ul li").click(Chat2.selectStatus);
         $('#input-message').keyup(Chat2.typing);
         $('button.submit').click(Chat2.send);
         $('.messages').scroll(Chat2.loadMoreMessages);
