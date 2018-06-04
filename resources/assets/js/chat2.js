@@ -1,7 +1,5 @@
 var Chat2 = {
     ENTER: 13,
-    SENDING_MESSAGE_TYPE: "sending-message",
-    TYPING_TYPE: "typing",
 
     typing_delay: "",
     is_initial_typing: true,
