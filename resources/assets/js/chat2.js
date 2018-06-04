@@ -73,7 +73,7 @@ var Chat2 = {
             Chat2.is_initial_typing = true;
 
             Chat2Events.send($.extend({event: Chat2Events.ON_STOP_TYPING}, data));
-        }, 3000);
+        }, Chat2Events.typing_delay);
 
         if (key_code === Chat2.ENTER) {
             Chat2.send();
@@ -130,6 +130,7 @@ var Chat2Events = {
     ON_FETCH_MESSAGES: "onFetchMessages",
     ON_LOAD_MORE_MESSAGES: "onLoadMoreMessages",
 
+    typing_delay: 3000, // 3 seconds
     load_more_increment: 0,
 
     init: function() {
