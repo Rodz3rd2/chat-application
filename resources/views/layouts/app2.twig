@@ -25,7 +25,7 @@
 
     <script type="text/javascript">
     window.chat = {
-        hostname: "{{ server['SERVER_NAME'] }}",
+        hostname: "{{ config('chat.hostname') }}",
         port: "{{ config('chat.port') }}",
         auth_id: "{{ auth_user.get.id }}",
     };

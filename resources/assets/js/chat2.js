@@ -2,11 +2,11 @@ var Chat2 = {
     init: function() {
         Chat2.scrollDown();
 
-        $("#profile-img").click(Chat2.showStatusOptions);
-        $(".expand-button").click(Chat2.expandButton);
+        $("#profile-img").on('click touchstart', Chat2.showStatusOptions);
+        $(".expand-button").on('click touchstart', Chat2.expandButton);
         $('#contacts').on("click", ".contact", Chat2.selectContact);
-        $('#input-message').keyup(Chat2.typing);
-        $('button.submit').click(Chat2.send);
+        $('#input-message').on('keyup input', Chat2.typing);
+        $('button.submit').on('click touchstart', Chat2.send);
         $('.messages').scroll(Chat2.loadMoreMessages);
 
         Chat2Events.init();
@@ -29,8 +29,6 @@ var Chat2 = {
         $('#contacts .contact').removeClass('active');
         $(this).addClass('active');
         var sender_id = $('#contacts .contact.active').data('id');
-
-        console.log(selected_contact, sender_id);
 
         if (selected_contact != sender_id) {
             $('.contact-profile img').attr('src', img);
