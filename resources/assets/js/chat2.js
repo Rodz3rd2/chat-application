@@ -80,12 +80,8 @@ var Chat2 = {
         if (!_.isEmpty(message)) {
             var data = {
                 event: Chat2Events.ON_SEND_MESSAGE,
-                // message_date: moment().format("MMMM Do YYYY"),
-                // chat_name: chat.first_name,
                 receiver_id: receiver_id,
-                message: message,
-                // message_time: moment().format("hh:mm A"),
-                // chat_lastname: chat.last_name
+                message: message
             };
 
             Chat2Events.send(data);
