@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'hostname' => "192.168.1.2",
-    'port' => 8888
+    'hostname' => _env('CHAT_HOST'),
+    'port' => _env('CHAT_PORT')
 ];

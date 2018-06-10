@@ -10,7 +10,7 @@ class Message extends Model
 
     const IS_READ = 1;
     const IS_UNREAD = 0;
-    const DEFAULT_CONVERSATION_LENGTH = 5;
+    const DEFAULT_CONVERSATION_LENGTH = 15;
 
     public function sender()
     {
